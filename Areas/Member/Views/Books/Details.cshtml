@@ -1,0 +1,96 @@
+@model LibraryApp.ViewModels.BookBrowseViewModel
+
+@{
+    ViewData["Title"] = @Model.Title;
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-heading">@Model.Title</h2>
+        <p class="page-subheading">by @Model.Author</p>
+    </div>
+    <a asp-area="Member" asp-controller="Books" asp-action="Index" class="btn btn-outline">
+        <i data-feather="arrow-left"></i> Back to Books
+    </a>
+</div>
+
+<div class="details-grid">
+    <div class="form-card">
+        @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
+        {
+            <img src="@Model.CoverImageUrl" alt="@Model.Title" class="book-cover-full" />
+        }
+        else
+        {
+            <div class="book-cover-placeholder-large">
+                <i data-feather="book"></i>
+            </div>
+        }
+        <div style="margin-top: 1.5rem">
+            @if (Model.AlreadyBorrowed)
+            {
+                <div class="alert alert-success">
+                    You currently have this book borrowed
+                </div>
+            }
+            else if (!Model.IsAvailable)
+            {
+                <div class="alert alert-danger">
+                    No copies available right now
+                </div>
+            }
+            else
+            {
+                <form asp-area="Member" asp-controller="Borrow"
+                      asp-action="BorrowBook" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="bookId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="book-open"></i> Borrow This Book
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+
+    <div class="form-card">
+        <h3 class="card-section-title">Book Details</h3>
+        <div class="detail-row">
+            <span class="detail-label">Title</span>
+            <span class="detail-value">@Model.Title</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Author</span>
+            <span class="detail-value">@Model.Author</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Genre</span>
+            <span class="detail-value"><span class="badge">@Model.Genre</span></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">ISBN</span>
+            <span class="detail-value text-light">@Model.ISBN</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Description</span>
+            <span class="detail-value">@Model.Description</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Availability</span>
+            <span class="detail-value">
+                <span class="@(Model.IsAvailable ? "badge badge-success" : "badge badge-danger")">
+                    @Model.CopiesAvailable of @Model.TotalCopies available
+                </span>
+            </span>
+        </div>
+    </div>
+</div>

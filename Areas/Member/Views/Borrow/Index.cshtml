@@ -1,0 +1,90 @@
+@model List<LibraryApp.ViewModels.BorrowRecordViewModel>
+
+@{
+    ViewData["Title"] = "My Borrows";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-heading">My Active Borrows</h2>
+        <p class="page-subheading">Books you currently have borrowed</p>
+    </div>
+    <div class="header-actions">
+        <a asp-area="Member" asp-controller="Borrow" asp-action="History" class="btn btn-outline">
+            <i data-feather="clock"></i> View History
+        </a>
+        <a asp-area="Member" asp-controller="Books" asp-action="Index" class="btn btn-primary" style="width:auto">
+            <i data-feather="book-open"></i> Browse Books
+        </a>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Author</th>
+                <th>Borrowed</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <i data-feather="book"></i>
+                        <p>No active borrows — <a asp-area="Member" asp-controller="Books" asp-action="Index">browse
+                            books</a></p>
+                        </td>
+                    </tr>
+                }
+            else
+                {
+                    @foreach (var borrow in Model)
+                    {
+                        <tr>
+                            <td class="book-title">@borrow.BookTitle</td>
+                            <td class="text-light">@borrow.BookAuthor</td>
+                            <td>@borrow.BorrowedAt.ToString("MMM dd, yyyy")</td>
+                            <td class="@(borrow.IsOverdue ? "text-danger" : "")">
+                                @borrow.DueDate.ToString("MMM dd, yyyy")
+                            </td>
+                            <td>
+                                @if (borrow.IsOverdue)
+                                {
+                                    <span class="badge badge-danger">Overdue</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-success">Active</span>
+                                }
+                            </td>
+                            <td>
+                                <form asp-area="Member" asp-controller="Borrow" asp-action="ReturnBook" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="borrowId" value="@borrow.Id" />
+                                    <button type="submit" class="btn btn-outline" style="width:auto; font-size:0.85rem"
+                                            onclick="return confirm('Return @borrow.BookTitle?')">
+                                        <i data-feather="corner-up-left"></i> Return
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>

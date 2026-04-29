@@ -1,0 +1,63 @@
+@model LibraryApp.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>@Model.TotalBooks</h3>
+        <p>Total Books</p>
+    </div>
+    <div class="stat-card">
+        <h3>@Model.TotalMembers</h3>
+        <p>Total Members</p>
+    </div>
+    <div class="stat-card">
+        <h3>@Model.ActiveBorrows</h3>
+        <p>Active Borrows</p>
+    </div>
+    <div class="stat-card">
+        <h3>@Model.ReturnedBooks</h3>
+        <p>Books Returned</p>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <h2>Recently Registered Members</h2>
+        <a asp-area="Admin" asp-controller="Members" asp-action="Index" class="btn btn-primary" style="width:auto">
+            View All Members
+        </a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Joined Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.RecentMembers.Any())
+            {
+                <tr>
+                    <td colspan="3" style="text-align:center; color: var(--text-light);">
+                        No members yet
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var member in Model.RecentMembers)
+                {
+                    <tr>
+                        <td>@member.FirstName @member.LastName</td>
+                        <td>@member.Email</td>
+                        <td>@member.CreatedAt.ToShortDateString()</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

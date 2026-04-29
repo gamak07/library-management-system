@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Admin</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+
+<body class="admin-body">
+
+    <div class="admin-wrapper">
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-brand">
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                    LibraryApp
+                </a>
+                <span>Admin Panel</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                    Dashboard
+                </a>
+                <a asp-area="Admin" asp-controller="Books" asp-action="Index">
+                    Books
+                </a>
+                <a asp-area="Admin" asp-controller="Members" asp-action="Index">
+                    Members
+                </a>
+                <a asp-area="Admin" asp-controller="BorrowRecords" asp-action="Index">
+                    Borrow Records
+                </a>
+                <a asp-area="Admin" asp-controller="Account" asp-action="RegisterAdmin">
+                    Register Admin
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="logout-btn"> Logout</button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <h1 class="page-title">@ViewData["Title"]</h1>
+                <div class="admin-user">
+                    @User.Identity!.Name
+                </div>
+            </header>
+            <main class="admin-content">
+                @RenderBody()
+            </main>
+        </div>
+
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    
+    <script>
+        feather.replace();
+    </script>
+</body>
+
+</html>

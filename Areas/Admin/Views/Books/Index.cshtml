@@ -1,0 +1,87 @@
+@model List<LibraryApp.Models.Book>
+
+@{
+    ViewData["Title"] = "Books";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-heading">Books</h2>
+        <p class="page-subheading">Manage your library collection</p>
+    </div>
+    <a asp-area="Admin" asp-controller="Books" asp-action="Create" class="btn btn-primary" style="width:auto">
+        <i data-feather="plus"></i> Add Book
+    </a>
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <h2>All Books (@Model.Count)</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>ISBN</th>
+                <th>Total</th>
+                <th>Available</th>
+                <th>Added</th>
+                <th>Updated</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        <i data-feather="book-open"></i>
+                        <p>No books yet — add your first book</p>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var book in Model)
+                {
+                    <tr>
+                        <td class="book-title">@book.Title</td>
+                        <td>@book.Author</td>
+                        <td><span class="badge">@book.Genre</span></td>
+                        <td class="text-light">@book.ISBN</td>
+                        <td>@book.TotalCopies</td>
+                        <td>
+                            <span class="@(book.CopiesAvailable > 0 ? "badge badge-success" : "badge badge-danger")">
+                                @book.CopiesAvailable
+                            </span>
+                        </td>
+                        <td class="text-light">@book.CreatedAt.ToString("MMM dd, yyyy")</td>
+                        <td class="text-light">
+                            @(book.UpdatedAt.HasValue
+                                ? book.UpdatedAt.Value.ToString("MMM dd, yyyy")
+                                : "—")
+                        </td>
+                        <td>
+                            <div class="action-group">
+                                <a asp-area="Admin" asp-controller="Books" asp-action="Edit" asp-route-id="@book.Id"
+                                       class="action-btn action-btn-edit" title="Edit">
+                                    <i data-feather="edit-2"></i>
+                                </a>
+                                <a asp-area="Admin" asp-controller="Books" asp-action="Details" asp-route-id="@book.Id"
+                                       class="action-btn action-btn-details" title="Details">
+                                    <i data-feather="eye"></i>
+                                </a>
+                                <a asp-area="Admin" asp-controller="Books" asp-action="Delete" asp-route-id="@book.Id"
+                                       class="action-btn action-btn-delete" title="Delete">
+                                    <i data-feather="trash-2"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

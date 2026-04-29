@@ -1,0 +1,59 @@
+@model LibraryApp.Models.Book
+
+@{
+    ViewData["Title"] = "Delete Book";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-heading">Delete Book</h2>
+        <p class="page-subheading">This action cannot be undone</p>
+    </div>
+    <a asp-area="Admin" asp-controller="Books" asp-action="Index" class="btn btn-outline">
+        <i data-feather="arrow-left"></i> Back to Books
+    </a>
+</div>
+
+<div class="form-card">
+
+    <div class="delete-warning">
+        <i data-feather="alert-triangle"></i>
+        <p>Are you sure you want to delete <strong>@Model.Title</strong>?</p>
+    </div>
+
+    <div class="delete-preview">
+        <div class="detail-row">
+            <span class="detail-label">Title</span>
+            <span class="detail-value">@Model.Title</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Author</span>
+            <span class="detail-value">@Model.Author</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Genre</span>
+            <span class="detail-value">@Model.Genre</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">ISBN</span>
+            <span class="detail-value">@Model.ISBN</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Total Copies</span>
+            <span class="detail-value">@Model.TotalCopies</span>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <form asp-area="Admin" asp-controller="Books" asp-action="Delete" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger" style="width:auto">
+                <i data-feather="trash-2"></i> Yes, Delete
+            </button>
+        </form>
+        <a asp-area="Admin" asp-controller="Books" asp-action="index" asp-route-id="@Model.Id" class="btn btn-outline">
+            Cancel
+        </a>
+    </div>
+
+</div>

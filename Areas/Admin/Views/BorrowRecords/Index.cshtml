@@ -1,0 +1,125 @@
+@model List<LibraryApp.ViewModels.BorrowRecordListViewModel>
+
+@{
+    ViewData["Title"] = "Borrow Records";
+    var currentFilter = ViewBag.CurrentFilter as string ?? "all";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-heading">Borrow Records</h2>
+        <p class="page-subheading">Track all borrowing activity</p>
+    </div>
+</div>
+
+@* {{-- Filter Tabs --}} *@
+<div class="filter-tabs">
+    <a asp-area="Admin"
+       asp-controller="BorrowRecords"
+       asp-action="Index"
+       class="filter-tab @(currentFilter == "all" ? "filter-tab-active" : "")">
+        All
+        <span class="filter-count">@ViewBag.TotalCount</span>
+    </a>
+    <a asp-area="Admin"
+       asp-controller="BorrowRecords"
+       asp-action="Index"
+       asp-route-filter="active"
+       class="filter-tab @(currentFilter == "active" ? "filter-tab-active" : "")">
+        Active
+        <span class="filter-count">@ViewBag.ActiveCount</span>
+    </a>
+    <a asp-area="Admin"
+       asp-controller="BorrowRecords"
+       asp-action="Index"
+       asp-route-filter="returned"
+       class="filter-tab @(currentFilter == "returned" ? "filter-tab-active" : "")">
+        Returned
+        <span class="filter-count">@ViewBag.ReturnedCount</span>
+    </a>
+    <a asp-area="Admin"
+       asp-controller="BorrowRecords"
+       asp-action="Index"
+       asp-route-filter="overdue"
+       class="filter-tab @(currentFilter == "overdue" ? "filter-tab-active" : "")">
+        Overdue
+        <span class="filter-count">@ViewBag.OverdueCount</span>
+    </a>
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <h2>
+            @switch (currentFilter)
+            {
+                case "active":   <text>Active Borrows</text>   break;
+                case "returned": <text>Returned Books</text>   break;
+                case "overdue":  <text>Overdue Books</text>    break;
+                default:         <text>All Records</text>      break;
+            }
+        </h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Member</th>
+                <th>Book</th>
+                <th>Author</th>
+                <th>Borrowed</th>
+                <th>Due Date</th>
+                <th>Returned</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i data-feather="clipboard"></i>
+                        <p>No records found</p>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var record in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="book-title">@record.MemberName</div>
+                            <div class="text-light" style="font-size:0.8rem">
+                                @record.MemberEmail
+                            </div>
+                        </td>
+                        <td class="book-title">@record.BookTitle</td>
+                        <td class="text-light">@record.BookAuthor</td>
+                        <td>@record.BorrowedAt.ToString("MMM dd, yyyy")</td>
+                        <td class="@(record.IsOverdue ? "text-danger" : "")">
+                            @record.DueDate.ToString("MMM dd, yyyy")
+                        </td>
+                        <td>
+                            @(record.ReturnedAt.HasValue
+                                ? record.ReturnedAt.Value.ToString("MMM dd, yyyy")
+                                : "—")
+                        </td>
+                        <td>
+                            @if (record.IsReturned)
+                            {
+                                <span class="badge badge-success">Returned</span>
+                            }
+                            else if (record.IsOverdue)
+                            {
+                                <span class="badge badge-danger">Overdue</span>
+                            }
+                            else
+                            {
+                                <span class="badge">Active</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

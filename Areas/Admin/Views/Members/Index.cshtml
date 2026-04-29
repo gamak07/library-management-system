@@ -1,0 +1,72 @@
+@model List<LibraryApp.ViewModels.MemberListViewModel>
+
+@{
+    ViewData["Title"] = "Members";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-heading">Members</h2>
+        <p class="page-subheading">@Model.Count registered members</p>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <h2>All Members</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Joined</th>
+                <th>Total Borrows</th>
+                <th>Active Borrows</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i data-feather="users"></i>
+                        <p>No members registered yet</p>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var member in Model)
+                {
+                    <tr>
+                        <td class="book-title">@member.FirstName @member.LastName</td>
+                        <td class="text-light">@member.Email</td>
+                        <td class="text-light">@member.CreatedAt.ToString("MMM dd, yyyy")</td>
+                        <td>@member.TotalBorrows</td>
+                        <td>
+                            <span class="@(member.ActiveBorrows > 0 ? "badge badge-success" : "badge")">
+                                @member.ActiveBorrows
+                            </span>
+                        </td>
+                        <td>
+                            <span class="@(member.IsSuspended ? "badge badge-danger" : "badge badge-success")">
+                                @(member.IsSuspended ? "Suspended" : "Active")
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-group">
+                                <a asp-area="Admin" asp-controller="Members" asp-action="Details" asp-route-id="@member.Id"
+                                       class="action-btn action-btn-view" title="View Details">
+                                    <i data-feather="eye"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

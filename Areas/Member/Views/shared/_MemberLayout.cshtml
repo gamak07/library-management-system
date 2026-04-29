@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — LibraryApp</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a asp-area="Member" asp-controller="Home" asp-action="Index">
+                LibraryApp
+            </a>
+        </div>
+        <div class="navbar-links">
+            <a asp-area="Member" asp-controller="Home" asp-action="Index">
+                <i data-feather="home"></i> Home
+            </a>
+            <a asp-area="Member" asp-controller="Books" asp-action="Index">
+                <i data-feather="book-open"></i> Books
+            </a>
+            <a asp-area="Member" asp-controller="Borrow" asp-action="Index">
+                <i data-feather="bookmark"></i> My Borrows
+            </a>
+            <a asp-area="Member" asp-controller="Borrow" asp-action="History">
+                <i data-feather="clock"></i> History
+            </a>
+            <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                <button type="submit" class="logout-btn">
+                    <i data-feather="log-out"></i> Logout
+                </button>
+            </form>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <p>&copy; @DateTime.Now.Year LibraryApp. All rights reserved.</p>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <!-- before </body> -->
+    <script>feather.replace()</script>
+
+</body>
+
+</html>

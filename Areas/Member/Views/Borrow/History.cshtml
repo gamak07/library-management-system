@@ -1,0 +1,77 @@
+@model List<LibraryApp.ViewModels.BorrowRecordViewModel>
+
+@{
+    ViewData["Title"] = "Borrow History";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-heading">Borrow History</h2>
+        <p class="page-subheading">All your past and current borrows</p>
+    </div>
+    <a asp-area="Member" asp-controller="Borrow" asp-action="Index" class="btn btn-outline">
+        <i data-feather="arrow-left"></i> Active Borrows
+    </a>
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <h2>All Borrows (@Model.Count)</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Author</th>
+                <th>Borrowed</th>
+                <th>Due Date</th>
+                <th>Returned</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <i data-feather="clock"></i>
+                        <p>No borrow history yet</p>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var record in Model)
+                {
+                    <tr>
+                        <td class="book-title">@record.BookTitle</td>
+                        <td class="text-light">@record.BookAuthor</td>
+                        <td>@record.BorrowedAt.ToString("MMM dd, yyyy")</td>
+                        <td class="@(record.IsOverdue ? "text-danger" : "")">
+                            @record.DueDate.ToString("MMM dd, yyyy")
+                        </td>
+                        <td>
+                            @(record.ReturnedAt.HasValue
+                                ? record.ReturnedAt.Value.ToString("MMM dd, yyyy")
+                                : "—")
+                        </td>
+                        <td>
+                            @if (record.IsReturned)
+                            {
+                                <span class="badge badge-success">Returned</span>
+                            }
+                            else if (record.IsOverdue)
+                            {
+                                <span class="badge badge-danger">Overdue</span>
+                            }
+                            else
+                            {
+                                <span class="badge">Active</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

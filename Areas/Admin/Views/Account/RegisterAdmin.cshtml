@@ -1,0 +1,70 @@
+@model LibraryApp.ViewModels.RegisterAdminViewModel
+
+@{
+    ViewData["Title"] = "Register Admin";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-heading">Register New Admin</h2>
+        <p class="page-subheading">Create a new administrator account</p>
+    </div>
+    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="btn btn-outline">
+        <i data-feather="arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+<div class="form-card">
+    <form asp-area="Admin" asp-controller="Account" asp-action="RegisterAdmin" method="post">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label asp-for="FirstName">First Name</label>
+                <input asp-for="FirstName" type="text" placeholder="John" />
+                <span asp-validation-for="FirstName" class="validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName">Last Name</label>
+                <input asp-for="LastName" type="text" placeholder="Doe" />
+                <span asp-validation-for="LastName" class="validation-error"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Email">Email</label>
+            <input asp-for="Email" type="email" placeholder="admin@libraryapp.com" />
+            <span asp-validation-for="Email" class="validation-error"></span>
+        </div>
+
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label asp-for="Password">Password</label>
+                <input asp-for="Password" type="password" placeholder="••••••••" />
+                <span asp-validation-for="Password" class="validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword">Confirm Password</label>
+                <input asp-for="ConfirmPassword" type="password" placeholder="••••••••" />
+                <span asp-validation-for="ConfirmPassword" class="validation-error"></span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" style="width:auto">
+                <i data-feather="user-plus"></i> Create Admin
+            </button>
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="btn btn-outline">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

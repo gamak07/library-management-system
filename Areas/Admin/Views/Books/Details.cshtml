@@ -1,0 +1,98 @@
+@model LibraryApp.Models.Book
+
+@{
+    ViewData["Title"] = "Book Details";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-heading">@Model.Title</h2>
+        <p class="page-subheading">Full book information</p>
+    </div>
+    <div class="header-actions">
+        <a asp-area="Admin" asp-controller="Books" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary"
+               style="width:auto">
+            <i data-feather="edit-2"></i> Edit
+        </a>
+        <a asp-area="Admin" asp-controller="Books" asp-action="Index" class="btn btn-outline">
+            <i data-feather="arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+
+<div class="details-grid">
+
+    <div class="form-card">
+        <h3 class="card-section-title">Book Information</h3>
+
+        <div class="detail-row">
+            <span class="detail-label">Title</span>
+            <span class="detail-value">@Model.Title</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Author</span>
+            <span class="detail-value">@Model.Author</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Genre</span>
+            <span class="detail-value">
+                <span class="badge">@Model.Genre</span>
+            </span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">ISBN</span>
+            <span class="detail-value">@Model.ISBN</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Description</span>
+            <span class="detail-value">@Model.Description</span>
+        </div>
+    </div>
+
+    <div class="form-card">
+        <h3 class="card-section-title">Availability</h3>
+
+        <div class="detail-row">
+            <span class="detail-label">Total Copies</span>
+            <span class="detail-value">@Model.TotalCopies</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Available</span>
+            <span class="detail-value">
+                <span class="@(Model.CopiesAvailable > 0 ? "badge badge-success" : "badge badge-danger")">
+                    @Model.CopiesAvailable available
+                </span>
+            </span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Borrowed</span>
+            <span class="detail-value">@(Model.TotalCopies - Model.CopiesAvailable)</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Cover Image</span>
+            <span class="detail-value">
+                @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
+                {
+                    <img src="@Model.CoverImageUrl" alt="@Model.Title" class="book-cover-preview" />
+                }
+                else
+                {
+                    <span class="text-muted">No image provided</span>
+                }
+            </span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Added</span>
+            <span class="detail-value">@Model.CreatedAt.ToString("MMM dd, yyyy")</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Last Updated</span>
+            <span class="detail-value">
+                @(Model.UpdatedAt.HasValue
+                    ? Model.UpdatedAt.Value.ToString("MMM dd, yyyy")
+                    : "Never updated")
+            </span>
+        </div>
+    </div>
+
+</div>

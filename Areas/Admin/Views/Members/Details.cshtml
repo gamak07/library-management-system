@@ -1,0 +1,166 @@
+@model LibraryApp.ViewModels.MemberDetailsViewModel
+
+@{
+    ViewData["Title"] = "Member Details";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-heading">@Model.FirstName @Model.LastName</h2>
+        <p class="page-subheading">Member profile and borrow history</p>
+    </div>
+    <a asp-area="Admin" asp-controller="Members" asp-action="Index" class="btn btn-outline">
+        <i data-feather="arrow-left"></i> Back to Members
+    </a>
+</div>
+
+<div class="details-grid">
+
+    @* {{-- Profile Card --}} *@
+    <div class="form-card">
+        <h3 class="card-section-title">Profile</h3>
+
+        <div class="detail-row">
+            <span class="detail-label">Full Name</span>
+            <span class="detail-value">@Model.FirstName @Model.LastName</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Email</span>
+            <span class="detail-value">@Model.Email</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Joined</span>
+            <span class="detail-value">@Model.CreatedAt.ToString("MMM dd, yyyy")</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Status</span>
+            <span class="detail-value">
+                <span class="@(Model.IsSuspended ? "badge badge-danger" : "badge badge-success")">
+                    @(Model.IsSuspended ? "Suspended" : "Active")
+                </span>
+            </span>
+        </div>
+
+        <div class="form-actions">
+            @if (Model.IsSuspended)
+            {
+                <form asp-area="Admin" asp-controller="Members" asp-action="Reinstate" asp-route-id="@Model.Id"
+                      method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-primary" style="width:auto">
+                        <i data-feather="user-check"></i> Reinstate Member
+                    </button>
+                </form>
+            }
+            else
+            {
+                <form asp-area="Admin" asp-controller="Members" asp-action="Suspend" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger" style="width:auto">
+                        <i data-feather="user-x"></i> Suspend Member
+                    </button>
+                </form>
+            }
+
+            <form asp-area="Admin" asp-controller="Members" asp-action="Delete" asp-route-id="@Model.Id" method="post"
+                  onsubmit="return confirm('Permanently delete this member? This cannot be undone.')">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger" style="width:auto; background:#7f1d1d">
+                    <i data-feather="trash-2"></i> Delete Member
+                </button>
+            </form>
+        </div>
+    </div>
+
+    @* {{-- Borrow Stats --}} *@
+    <div class="form-card">
+        <h3 class="card-section-title">Borrow Summary</h3>
+        <div class="detail-row">
+            <span class="detail-label">Total Borrows</span>
+            <span class="detail-value">@Model.BorrowHistory.Count</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Active Borrows</span>
+            <span class="detail-value">
+                @Model.BorrowHistory.Count(b => !b.IsReturned)
+            </span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Returned</span>
+            <span class="detail-value">
+                @Model.BorrowHistory.Count(b => b.IsReturned)
+            </span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Overdue</span>
+            <span class="detail-value">
+                <span
+                    class="@(Model.BorrowHistory.Any(b => b.IsOverdue) ? "badge badge-danger" : "badge badge-success")">
+                    @Model.BorrowHistory.Count(b => b.IsOverdue)
+                </span>
+            </span>
+        </div>
+    </div>
+
+</div>
+
+@* {{-- Borrow History Table --}} *@
+<div class="table-container" style="margin-top: 1.5rem">
+    <div class="table-header">
+        <h2>Borrow History</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Author</th>
+                <th>Borrowed</th>
+                <th>Due Date</th>
+                <th>Returned</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.BorrowHistory.Any())
+            {
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <i data-feather="book"></i>
+                        <p>No borrow history yet</p>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var record in Model.BorrowHistory)
+                {
+                    <tr>
+                        <td class="book-title">@record.BookTitle</td>
+                        <td class="text-light">@record.BookAuthor</td>
+                        <td>@record.BorrowedAt.ToString("MMM dd, yyyy")</td>
+                        <td>@record.DueDate.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            @(record.ReturnedAt.HasValue
+                                ? record.ReturnedAt.Value.ToString("MMM dd, yyyy")
+                                : "—")
+                        </td>
+                        <td>
+                            @if (record.IsReturned)
+                            {
+                                <span class="badge badge-success">Returned</span>
+                            }
+                            else if (record.IsOverdue)
+                            {
+                                <span class="badge badge-danger">Overdue</span>
+                            }
+                            else
+                            {
+                                <span class="badge">Active</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

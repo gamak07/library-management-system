@@ -1,0 +1,81 @@
+@model List<LibraryApp.ViewModels.BookBrowseViewModel>
+
+@{
+    ViewData["Title"] = "Browse Books";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-heading">Browse Books</h2>
+        <p class="page-subheading">@Model.Count books available</p>
+    </div>
+</div>
+
+@* {{-- Search Form --}} *@
+<form asp-area="Member" asp-controller="Books" asp-action="Index" method="get" class="search-form">
+    <div class="search-group">
+        <i data-feather="search"></i>
+        <input type="text" name="search" value="@ViewBag.Search"
+               placeholder="Search by title or author..." />
+        <button type="submit" class="btn btn-primary" style="width:auto">Search</button>
+        @if (!string.IsNullOrEmpty(ViewBag.Search as string))
+        {
+            <a asp-area="Member" asp-controller="Books" asp-action="Index" class="btn btn-outline">
+                Clear
+            </a>
+        }
+    </div>
+</form>
+
+<div class="books-grid">
+    @if (!Model.Any())
+    {
+        <div class="empty-state" style="grid-column: 1/-1">
+            <i data-feather="book-open"></i>
+            <p>No books found matching your search</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var book in Model)
+        {
+            <div class="book-card">
+                @if (!string.IsNullOrEmpty(book.CoverImageUrl))
+                {
+                    <img src="@book.CoverImageUrl" alt="@book.Title" class="book-card-cover" />
+                }
+                else
+                {
+                    <div class="book-card-cover-placeholder">
+                        <i data-feather="book"></i>
+                    </div>
+                }
+                <div class="book-card-body">
+                    <span class="badge">@book.Genre</span>
+                    <h3 class="book-card-title">@book.Title</h3>
+                    <p class="book-card-author">@book.Author</p>
+                    <p class="book-card-description">@book.Description</p>
+                    <div class="book-card-footer">
+                        <span class="@(book.IsAvailable ? "badge badge-success" : "badge badge-danger")">
+                            @(book.IsAvailable ? $"{book.CopiesAvailable} available" : "Not available")
+                        </span>
+                        <a asp-area="Member" asp-controller="Books"
+                           asp-action="Details" asp-route-id="@book.Id"
+                           class="btn btn-outline" style="width:auto; padding: 0.4rem 0.75rem; font-size:0.85rem">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

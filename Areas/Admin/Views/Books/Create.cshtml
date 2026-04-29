@@ -1,0 +1,91 @@
+@model LibraryApp.Models.Book
+
+@{
+    ViewData["Title"] = "Add New Book";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-heading">Add New Book</h2>
+        <p class="page-subheading">Fill in the details to add a new book</p>
+    </div>
+    <a asp-area="Admin" asp-controller="Books" asp-action="Index" class="btn btn-outline">
+        <i data-feather="arrow-left"></i> Back to Books
+    </a>
+</div>
+
+<div class="form-card">
+    <form asp-area="Admin" asp-controller="Books" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label asp-for="Title">Title</label>
+                <input asp-for="Title" type="text" placeholder="Book title" />
+                <span asp-validation-for="Title" class="validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Author">Author</label>
+                <input asp-for="Author" type="text" placeholder="Author name" />
+                <span asp-validation-for="Author" class="validation-error"></span>
+            </div>
+        </div>
+
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label asp-for="Genre">Genre</label>
+                <input asp-for="Genre" type="text" placeholder="e.g Fiction, Technology" />
+                <span asp-validation-for="Genre" class="validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ISBN">ISBN</label>
+                <input asp-for="ISBN" type="text" placeholder="e.g 978-0132350884" />
+                <span asp-validation-for="ISBN" class="validation-error"></span>
+            </div>
+        </div>
+
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label asp-for="TotalCopies">Total Copies</label>
+                <input asp-for="TotalCopies" type="number" min="1" placeholder="0" />
+                <span asp-validation-for="TotalCopies" class="validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CopiesAvailable">Copies Available</label>
+                <input asp-for="CopiesAvailable" type="number" min="0" placeholder="0" />
+                <span asp-validation-for="CopiesAvailable" class="validation-error"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="CoverImageUrl">Cover Image URL</label>
+            <input asp-for="CoverImageUrl" type="text" placeholder="https://..." />
+            <span asp-validation-for="CoverImageUrl" class="validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description">Description</label>
+            <textarea asp-for="Description" rows="4" placeholder="Brief summary of the book"></textarea>
+            <span asp-validation-for="Description" class="validation-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" style="width:auto">
+                <i data-feather="save"></i> Save Book
+            </button>
+            <a asp-area="Admin" asp-controller="Books" asp-action="Index" class="btn btn-outline">
+                Cancel
+            </a>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
